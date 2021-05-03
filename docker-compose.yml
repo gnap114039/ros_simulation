@@ -1,0 +1,17 @@
+version: '3.3'
+
+services: 
+    ros_simulation:
+        image: gnap:ros_noetic
+        container_name: ros # docker run --name ros_simulation
+        environment: 
+            - DISPLAY
+            - QT_X11_NO_MITSHM=1
+        volumes: # docker run -v / --volume
+            - /tmp/.X11-unix:/tmp/.X11-unix:rw
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+        network_mode: "host" # docker run --net=host
+        stdin_open: true # docker run -i
+        tty: true # docker run -t
+        
