@@ -2,7 +2,7 @@ version: '3.3'
 
 services: 
     ros_simulation:
-        image: gnap:ros_noetic
+        image: gnap:gazebo
         container_name: ros # docker run --name ros_simulation
         environment: 
             - DISPLAY

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <!-- argument -->
+    <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
+
+
+    <!-- tf -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="bf2base" args="0 0 0 0 0 0 base_footprint base_link" output="screen" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="base2laser" args="0.033 0 0 0 0 0 base_link laser" output="screen" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="laser2bs" args="0 0 0 0 0 0 laser base_scan" output="screen" />
+
+
+    <!-- hardware -->
+    <!-- <include file="$(find hokuyo)/launch/hokuyo_sr.launch" /> -->
+
+
+    <!-- amcl -->
+    <include file="$(find amcl)/examples/amcl_diff.launch" />
+
+
+    <!-- odom -->
+    <!-- <include file="$(find lab)/launch/params_robot.launch" />  
+    <node name="hw_status" pkg="hw_status" type="status.py" respawn="true" output="log" />
+    <node name="motion" pkg="motion" type="motion.py" respawn="true" output="screen" />
+    <node name="trans_odom" pkg="trans" type="trpang.py" output="log" /> -->
+
+
+    <!-- map -->
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find map_server)/gazebo_sim.pgm 0.05"/>   
+
+
+    <!-- navigation stack -->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+      <!-- move_base -->
+      <rosparam file="$(find start)/config/move_base_params.yaml" command="load" />
+      
+      <!-- costmap -->
+      <rosparam file="$(find start)/config/costmap_common_params.yaml" command="load" ns="global_costmap" /> 
+      <rosparam file="$(find start)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find start)/config/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find start)/config/global_costmap_params.yaml" command="load" /> 
+
+      <!-- local planner: trajectory ros planner -->
+      <!-- <rosparam file="$(find yaml_config)/base_local_planner_params.yaml" command="load" /> -->
+
+      <!-- local planner: DWA planner -->
+      <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+      <rosparam file="$(find turtlebot3_navigation)/param/dwa_local_planner_params_$(arg model).yaml" command="load" />
+
+    </node>    
+
+    
+
+</launch>
+
